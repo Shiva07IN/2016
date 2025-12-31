@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy new year Aditi 🎀</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
+    <style>
+        /* Fixes image ratio and ensures consistency across all items */
+        .timeline-image, .image-placeholder {
+            width: 100%;
+            height: 250px; /* Sets a fixed height for uniformity */
+            object-fit: cover; /* Ensures images fill the area without distortion */
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
     <audio id="backgroundMusic" loop preload="auto">
@@ -33,7 +40,7 @@
                 <div class="timeline-content">
                     <div class="year">2017</div>
                     <h3>First Notice 💫</h3>
-                    <img src="photos/2017-1.jpeg" alt="First Notice" class="timeline-image">
+                    <img src="2017-1.jpeg" alt="First Notice" class="timeline-image">
                     <p>Dekho 2017 mai tumko hum phli baar to nhi lekin phli baar notice kiye tahe classroom mai, mtlb hum bhi new student thae tum bhi new student thi phir mtlb utna kabhi hamko himat nhi hua tha kabhi baat karne ka... tum bhut shy, introverted thi... Hum tumse bhi bada wala shy, introvert 😂</p>
                 </div>
             </div>
