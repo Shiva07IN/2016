@@ -3,6 +3,12 @@ let backgroundMusic = null;
 document.addEventListener('DOMContentLoaded', function() {
     backgroundMusic = document.getElementById('backgroundMusic');
     const video = document.getElementById('surpriseVideo');
+    const timeline = document.querySelector('.timeline');
+    
+    // Add timeline track element
+    const timelineTrack = document.createElement('div');
+    timelineTrack.className = 'timeline-track';
+    timeline.appendChild(timelineTrack);
     
     // Enhanced music auto-start
     const startMusic = () => {
@@ -38,7 +44,47 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Enhanced Intersection Observer with staggered animations
+    // Traveling timeline indicator
+    function updateTimelineIndicator() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        const scrollTop = window.pageYOffset;
+        const windowHeight = window.innerHeight;
+        const timelineStart = timeline.offsetTop;
+        const timelineHeight = timeline.offsetHeight;
+        
+        // Calculate progress through timeline
+        const progress = Math.max(0, Math.min(1, 
+            (scrollTop + windowHeight / 2 - timelineStart) / timelineHeight
+        ));
+        
+        // Update indicator position
+        const indicator = document.querySelector('.timeline::after') || 
+                         document.querySelector('.timeline');
+        
+        if (indicator) {
+            const newTop = Math.max(100, Math.min(window.innerHeight - 100, 
+                windowHeight * 0.3 + (progress * windowHeight * 0.4)
+            ));
+            
+            document.documentElement.style.setProperty('--timeline-indicator-top', `${newTop}px`);
+        }
+    }
+    
+    // Throttled scroll handler for performance
+    let ticking = false;
+    function handleScroll() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateTimelineIndicator();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Enhanced Intersection Observer
     const observerOptions = {
         threshold: 0.15,
         rootMargin: '0px 0px -100px 0px'
@@ -50,156 +96,118 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => {
                     entry.target.style.animationPlayState = 'running';
                     entry.target.classList.add('animate-in');
-                }, index * 100);
+                }, index * 50);
             }
         });
     }, observerOptions);
     
-    // Observe timeline items with enhanced effects
+    // Observe timeline items
     document.querySelectorAll('.timeline-item').forEach((item, index) => {
-        item.style.animationDelay = `${index * 0.1}s`;
+        item.style.animationDelay = `${index * 0.05}s`;
         observer.observe(item);
     });
     
-    // Premium sparkle effects
+    // Optimized sparkle effects
     const timelineItems = document.querySelectorAll('.timeline-item');
     timelineItems.forEach(item => {
         const addSparkles = (e) => {
             e.preventDefault();
-            createPremiumSparkles(item);
+            createOptimizedSparkles(item);
         };
         
         item.addEventListener('mouseenter', addSparkles);
         item.addEventListener('touchstart', addSparkles, { passive: false });
     });
     
-    // Smooth parallax effect for hero section
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.5;
-            hero.style.transform = `translateY(${rate}px)`;
-        }, { passive: true });
-    }
-    
-    // Enhanced smooth scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-    
-    // Add loading animation completion
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 500);
+    // Initialize timeline indicator
+    updateTimelineIndicator();
 });
 
-function createPremiumSparkles(element) {
-    const sparkleCount = window.innerWidth < 768 ? 5 : 8;
-    const sparkleTypes = ['✨', '💫', '🌟', '⭐', '💖'];
+function createOptimizedSparkles(element) {
+    const sparkleCount = window.innerWidth < 768 ? 3 : 5;
+    const sparkleTypes = ['✨', '💫'];
     
     for (let i = 0; i < sparkleCount; i++) {
         const sparkle = document.createElement('div');
         const sparkleType = sparkleTypes[Math.floor(Math.random() * sparkleTypes.length)];
         
         sparkle.innerHTML = sparkleType;
-        sparkle.className = 'premium-sparkle';
+        sparkle.className = 'optimized-sparkle';
         sparkle.style.cssText = `
             position: absolute;
-            font-size: ${Math.random() * 0.8 + 0.8}em;
+            font-size: ${Math.random() * 0.5 + 0.8}em;
             pointer-events: none;
             z-index: 1000;
             left: ${Math.random() * element.offsetWidth}px;
             top: ${Math.random() * element.offsetHeight}px;
-            animation: premiumSparkle ${Math.random() * 0.5 + 1}s ease-out forwards;
-            filter: drop-shadow(0 2px 4px rgba(255, 107, 157, 0.3));
+            animation: optimizedSparkle ${Math.random() * 0.3 + 0.7}s ease-out forwards;
+            will-change: transform, opacity;
         `;
         
         element.style.position = 'relative';
         element.appendChild(sparkle);
         
-        setTimeout(() => sparkle.remove(), 1500);
+        setTimeout(() => sparkle.remove(), 1000);
     }
 }
 
-// Add premium animations and effects
+// Add optimized animations
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes premiumSparkle {
+    :root {
+        --timeline-indicator-top: 50vh;
+    }
+    
+    .timeline::after {
+        top: var(--timeline-indicator-top) !important;
+    }
+    
+    @keyframes optimizedSparkle {
         0% { 
             opacity: 0; 
-            transform: scale(0) rotate(0deg) translateY(0px); 
+            transform: scale(0) translateY(0px); 
         }
         50% { 
             opacity: 1; 
-            transform: scale(1.2) rotate(180deg) translateY(-15px); 
+            transform: scale(1) translateY(-10px); 
         }
         100% { 
             opacity: 0; 
-            transform: scale(0) rotate(360deg) translateY(-30px); 
+            transform: scale(0) translateY(-20px); 
         }
     }
     
     .animate-in {
-        animation: slideInEnhanced 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        animation: slideInOptimized 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
     }
     
-    @keyframes slideInEnhanced {
+    @keyframes slideInOptimized {
         from {
             opacity: 0;
-            transform: translateY(60px) scale(0.95);
+            transform: translateY(40px);
         }
         to {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
     }
     
-    .loaded {
-        animation: fadeIn 0.5s ease-in;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    .timeline-item:hover .timeline-content {
-        animation: contentGlow 0.3s ease forwards;
-    }
-    
-    @keyframes contentGlow {
-        to {
-            box-shadow: 
-                0 25px 60px rgba(255, 107, 157, 0.25),
-                0 0 40px rgba(255, 182, 193, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
-        }
-    }
-    
-    .premium-sparkle {
+    .optimized-sparkle {
         will-change: transform, opacity;
     }
     
-    /* Enhanced mobile touch feedback */
-    @media (hover: none) and (pointer: coarse) {
-        .timeline-content:active {
-            transform: scale(0.98);
-            transition: transform 0.1s ease;
-        }
-        
-        .timeline-image:active {
-            transform: scale(0.95);
-            transition: transform 0.1s ease;
+    /* Performance optimizations */
+    .timeline-content,
+    .timeline-image,
+    .surprise-container {
+        will-change: transform;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
     }
 `;
